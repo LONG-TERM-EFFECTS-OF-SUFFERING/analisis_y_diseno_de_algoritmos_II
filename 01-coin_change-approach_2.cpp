@@ -1,16 +1,19 @@
 #include <iostream>
+#include <vector>
 #include <limits>
 
-int best_count = std::numeric_limits <int>::max();
-int* best_combination = nullptr;
+int best_count = INT_MAX;
+std::vector <int> best_combination;
+std::vector <int> denominations;
+int n, amount;
 
 
-void coin_change_exhaustive(int denominations[], int n, int index, int remaining, int count, int* current) {
+void coin_change_exhaustive(int index, int remaining, int count, std::vector <int> &current) {
 	if (remaining == 0) {
 		if (count < best_count) {
+
 			best_count = count;
-			for (int j = 0; j < n; j++)
-				best_combination[j] = current[j];
+			best_combination = current;
 		} else
 			return;
 	}
@@ -26,33 +29,29 @@ void coin_change_exhaustive(int denominations[], int n, int index, int remaining
 		int new_remaining = remaining - coin_value * i;
 		int new_count = count + i;
 
-		coin_change_exhaustive(denominations, n, index + 1, new_remaining, new_count, current);
+		coin_change_exhaustive(index + 1, new_remaining, new_count, current);
 	}
 
 	current[index] = 0;
 }
 
-int* approach_2(int denominations[], int n, int amount) {
-	best_combination = new int[n]();
-	int* current = new int[n]();
+void approach_2() {
+	std::vector <int> current(n, 0);
 
-	coin_change_exhaustive(denominations, n, 0, amount, 0, current);
-
-	return best_combination;
+	coin_change_exhaustive(0, amount, 0, current);
 }
 
 
 int main() {
-	int denominations[] = { 1, 5 };
-	int amount = 6;
-	int n = sizeof(denominations) / sizeof(int);
-	int* result = approach_2(denominations, n, amount);
+	denominations = { 1, 5, 10, 2 };
+	amount = 30;
+	n = denominations.size();
 
-	for (int i = 0; i < n; i++)
-		std::cout << result[i] << " ";
-	std::cout << std::endl;
+	approach_2();
 
-	delete[] result;
+	for (const auto &coins : best_combination)
+		std::cout << coins << ' ';
+	std::cout << '\n';
 
 	return 0;
 }

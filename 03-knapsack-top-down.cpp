@@ -1,54 +1,51 @@
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 #define UNKNOWN -1
 
 int m, n;
-int** storage;
-int* solution;
+std::vector <int> b, w, solution;
+std::vector <std::vector <int>> storage;
 
 
-int knapsack_helper(int capacity, int items, int b[], int w[]) {
+int knapsack_helper(int capacity, int items) {
 	if (items == 0) // items <= 0
 		return 0; // Base case: no items left
 	else {
-		int i = capacity - 1, j = items - 1;
-		if (storage[i][j] == UNKNOWN) {
-			int benefit = b[j], weight = w[j];
+		int i = capacity - 1;
+		if (storage[i][items] == UNKNOWN) {
+			int benefit = b[items - 1], weight = w[items - 1];
 
 			if (weight > capacity)
-				storage[i][j] = knapsack_helper(capacity, items - 1, b, w);
+				storage[i][items] = knapsack_helper(capacity, items - 1);
 			else
-				storage[i][j] = std::max(knapsack_helper(capacity, items - 1, b, w),
-											knapsack_helper(capacity - weight, items - 1, b, w) + benefit);
+				storage[i][items] = std::max(knapsack_helper(capacity, items - 1),
+											knapsack_helper(capacity - weight, items - 1) + benefit);
 		}
 
-		return storage[i][j];
+		return storage[i][items];
 	}
 }
 
-int knapsack(int capacity, int items, int b[], int w[]) {
+int knapsack(int capacity, int items) {
 	for (int i = 0; i < m; i++)
-		for (int j = 0; j < n; j++)
+		for (int j = 0; j < n + 1; j++)
 			storage[i][j] = UNKNOWN;
 
-	return knapsack_helper(capacity, items, b, w);
+	return knapsack_helper(capacity, items);
 }
 
-void get_solution(int capacity, int items, int w[]) {
+void get_solution(int capacity, int items) {
 	if (items == 0) // items <= 0
-		return; // Base case: no capacity or no items left
+		return; // Base case: no items left
 	else {
-		int i = capacity - 1, j = items - 1;
-
-		if (j == 0) {
-			solution[j] = storage[i][j] != 0 ? 1 : 0;
-		} else if (storage[i][j] == storage[i][j - 1]) {
-			solution[j] = 0;
-			get_solution(capacity, items - 1, w);
+		if (storage[capacity - 1][items] == storage[capacity - 1][items - 1]) {
+			solution[items - 1] = 0;
+			get_solution(capacity, items - 1);
 		} else {
-			solution[j] = 1;
-			get_solution(capacity - w[j], items - 1, w);
+			solution[items] = 1;
+			get_solution(capacity - w[items - 1], items - 1);
 		}
 	}
 }
@@ -56,62 +53,63 @@ void get_solution(int capacity, int items, int w[]) {
 void print_storage() {
 	// Header
 	std::cout << " \t";
-	for (int i = 0; i < n; i++)
-		std::cout << i + 1 << '\t';
+	for (int i = 0; i < n + 1; i++)
+		std::cout << i << '\t';
 	std::cout << '\n';
 
 	std::cout << " \t";
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < n + 1; i++)
 		std::cout << '-' << '\t';
 	std::cout << '\n';
 
 	// Print storage matrix
 	for (int i = 0; i < m; i++) {
 		std::cout << i + 1 << '\t';
-		for (int j = 0; j < n; j++)
+		for (int j = 0; j < n + 1; j++)
 			std::cout << storage[i][j] << '\t';
 		std::cout << '\n';
 	}
 
 	// Footer
 	std::cout << " \t";
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < n + 1; i++)
 		std::cout << '-' << '\t';
 	std::cout << '\n';
 
 	std::cout << " \t";
-	for (int i = 0; i < n; i++)
-		std::cout << i + 1 << '\t';
+	for (int i = 0; i < n + 1; i++)
+		std::cout << i << '\t';
 	std::cout << '\n';
 }
 
 
 int main() {
 	m = 20;
-	int b[] = { 3, 2, 1, 4 };
-	int w[] = { 7, 5, 6, 8 };
-	n = sizeof(b) / sizeof(int);
-	solution = new int[n];
+	b = { 3, 2, 1, 4 };
+	w = { 7, 5, 6, 8 };
+	n = b.size();
 
-	storage = new int*[m];
+	if (m < 0) {
+		std::cerr << "Error: capacity cannot be negative\n";
+		return 1;
+	}
 
-	for (int i = 0; i < m; i++)
-		storage[i] = new int[n];
+	if (n != w.size()) {
+		std::cerr << "Error: benefits and weights vectors must be of the same size\n";
+		return 1;
+	}
 
-	knapsack(m, n, b, w);
+	solution = std::vector <int>(n, 0);
+	storage = std::vector <std::vector <int>>(m, std::vector <int>(n + 1, 0));
+
+	knapsack(m, n);
 	print_storage();
-	get_solution(m, n, w);
+	get_solution(m, n);
 
 	std::cout << "Solution: ( ";
-	for (int i = 0; i < n; i++)
-		std::cout << solution[i] << " ";
+	for (const auto &election : solution)
+		std::cout << election << ' ';
 	std::cout << ")\n";
-
-	delete[] solution;
-
-	for (int i = 0; i < m; i++)
-		delete[] storage[i];
-	delete[] storage;
 
 	return 0;
 }

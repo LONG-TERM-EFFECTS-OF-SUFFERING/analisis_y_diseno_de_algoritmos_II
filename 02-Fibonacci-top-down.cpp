@@ -1,8 +1,9 @@
 #include <iostream>
+#include <vector>
 
 #define MAX 92 // Largest n for which F(n) fits in a long
 #define UNKNOWN -1 // Contents denote an empty cell
-long storage[MAX + 1];
+std::vector <long> storage(MAX + 1, UNKNOWN);
 
 
 int Fibonacci_helper(int position) {

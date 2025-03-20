@@ -1,8 +1,13 @@
 #include <iostream>
+#include <vector>
+
+std::vector <int> denominations;
+int amount;
 
 
-int* approach_1(int denominations[], int n, int amount) {
-	int* solution = new int[n]();
+std::vector <int> approach_1() {
+	int n = denominations.size();
+	std::vector <int> solution(n, 0);
 
 	for (int i = n - 1; i >= 0; i--) {
 		solution[i] = amount / denominations[i];
@@ -14,16 +19,15 @@ int* approach_1(int denominations[], int n, int amount) {
 
 
 int main() {
-	int denominations[] = { 1, 5, 10, 25 };
-	int amount = 30;
-	int n = sizeof(denominations) / sizeof(int);
-	int* result = approach_1(denominations, n, amount);
+	denominations = { 1, 5, 10, 25 };
+	amount = 30;
 
-	for (int i = 0; i < 4; i++)
-		std::cout << result[i] << " ";
-	std::cout << std::endl;
 
-	delete[] result;
+	std::vector <int> result = approach_1();
+
+	for (const auto &coins : result)
+		std::cout << coins << ' ';
+	std::cout << '\n';
 
 	return 0;
 }

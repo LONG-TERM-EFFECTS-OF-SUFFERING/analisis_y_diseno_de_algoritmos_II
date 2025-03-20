@@ -1,7 +1,8 @@
 #include <iostream>
+#include <vector>
 
 #define MAX 92 // Largest n for which F(n) fits in a long
-long storage[MAX + 1];
+std::vector <long> storage(MAX + 1, -1);
 
 
 int Fibonacci(int position) {

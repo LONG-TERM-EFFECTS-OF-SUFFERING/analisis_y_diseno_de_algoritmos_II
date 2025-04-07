@@ -1,19 +1,21 @@
 #include <algorithm>
 #include <iostream>
+#include <vector>
 #include <limits.h>
 
 #define UNKNOWN -1 // Contents denote an empty cell
+
 int n;
-int** multiplications_matrix;
-int** k_matrix;
+std::vector <int> matrices;
+std::vector <std::vector <int>> multiplications_matrix, k_matrix;
 
 
-int MCM_helper(int matrices[], int i, int j) {
+int MCM_helper(int i, int j) {
 	if (multiplications_matrix[i - 1][j - 1] == UNKNOWN) {
 		int min = INT_MAX;
 
 		for (int k = i; k < j; k++) {
-			int value = MCM_helper(matrices, i, k) + MCM_helper(matrices, k + 1, j)
+			int value = MCM_helper(i, k) + MCM_helper(k + 1, j)
 							+ matrices[i - 1] * matrices[k] * matrices[j];
 			if (value < min) {
 				min = value;
@@ -27,7 +29,7 @@ int MCM_helper(int matrices[], int i, int j) {
 	return multiplications_matrix[i - 1][j - 1];
 }
 
-int MCM(int matrices[], int i, int j) {
+int MCM(int i, int j) {
 	for (int i = 0; i < n; i++) {
 		multiplications_matrix[i][i] = 0;
 		k_matrix[i][i] = 0;
@@ -39,7 +41,7 @@ int MCM(int matrices[], int i, int j) {
 			k_matrix[i][j] = UNKNOWN;
 		}
 
-	return MCM_helper(matrices, i, j);
+	return MCM_helper(i, j);
 }
 
 std::string get_solution(int i, int j) {
@@ -53,7 +55,7 @@ std::string get_solution(int i, int j) {
 	}
 }
 
-void print_storage(int** matrix, int n) {
+void print_storage(std::vector <std::vector <int>> matrix) {
 	// Header
 	std::cout << " \t";
 	for (int i = 0; i < n; i++)
@@ -80,34 +82,17 @@ void print_storage(int** matrix, int n) {
 
 
 int main() {
-	int matrices[] = { 30, 35, 15, 5, 10, 20, 25 };
-	int array_n = sizeof(matrices) / sizeof(int);
+	matrices = { 30, 35, 15, 5, 10, 20, 25 };
+	n = matrices.size() == 2 ? 1 : matrices.size() - 1;
 
-	if (array_n == 2)
-		n = 1;
-	else
-		n = array_n - 1;
+	multiplications_matrix = std::vector <std::vector <int>>(n, std::vector <int>(n));
+	k_matrix = std::vector <std::vector <int>>(n, std::vector <int>(n));
 
-	multiplications_matrix = new int*[n];
-	k_matrix = new int*[n];
-
-	for (int i = 0; i < n; i++) {
-		multiplications_matrix[i] = new int[n];
-		k_matrix[i] = new int[n];
-	}
-
-	MCM(matrices, 1, n);
-	print_storage(multiplications_matrix, n);
+	MCM(1, n);
+	print_storage(multiplications_matrix);
 	std::cout << '\n';
-	print_storage(k_matrix, n);
+	print_storage(k_matrix);
 	std::cout << "\nOptimal parenthesization: " << get_solution(1, n) << std::endl;
-
-	for (int i = 0; i < n; i++) {
-		delete[] multiplications_matrix[i];
-		delete[] k_matrix[i];
-	}
-	delete[] multiplications_matrix;
-	delete[] k_matrix;
 
 	return 0;
 }

@@ -1,8 +1,12 @@
 #include <iostream>
+#include <vector>
 #include <string>
 
+int n;
+std::vector <int> s, f;
 
-int get_solution_value(int s[], int f[], int i, int j) {
+
+int get_solution_value(std::vector <int> &s, std::vector <int> &f, int i, int j) {
 	if (j <= i + 1) {
 		return 0;
 	} else {
@@ -22,29 +26,22 @@ int get_solution_value(int s[], int f[], int i, int j) {
 	}
 }
 
+int get_solution_value_helper() {
+	std::vector <int> new_s = s, new_f = f;
+	new_s.insert(new_s.begin(), INT_MIN);
+	new_f.insert(new_f.begin(), INT_MIN);
+	new_s.insert(new_s.end(), INT_MAX);
+	new_f.insert(new_f.end(), INT_MAX);
+
+	return get_solution_value(new_s, new_f, 0, n + 1);
+}
+
 
 int main() {
-	int s[] = {
-		3, // Dummy s_1
-		1,
-		2,
-		6,
-		8,
-		5,
-		10 // Dummy s_2
-	};
+	s = { 1, 2, 6, 8, 5 };
+	f = { 3, 5, 8, 9, 10 };
 
-	int f[] = {
-		3, // Dummy f_1
-		3,
-		5,
-		8,
-		9,
-		10,
-		10, // Dummy f_2
-	};
-
-	int n = sizeof(s) / sizeof(int);
+	n = s.size();
 
 	std::cout << "Activities: ";
 	for (int i = 0; i < n; i++)
@@ -52,7 +49,7 @@ int main() {
 			<< f[i] << ") ";
 	std::cout << '\n';
 
-	std::cout << "Selected activities: " + std::to_string(get_solution_value(s, f, 0, n)) << std::endl;
+	std::cout << "Number of selected activities: " + std::to_string(get_solution_value_helper()) << std::endl;
 
 	return 0;
 }

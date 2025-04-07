@@ -56,31 +56,31 @@ void get_solution(int capacity, int items) {
 void print_storage() {
 	// Header
 	std::cout << " \t";
-	for (int i = 0; i < n + 1; i++)
+	for (int i = 0; i <= n; i++)
 		std::cout << i << '\t';
 	std::cout << '\n';
 
 	std::cout << " \t";
-	for (int i = 0; i < n + 1; i++)
+	for (int i = 0; i <= n; i++)
 		std::cout << '-' << '\t';
 	std::cout << '\n';
 
 	// Print storage matrix
 	for (int i = 0; i < m; i++) {
 		std::cout << i + 1 << '\t';
-		for (int j = 0; j < n + 1; j++)
+		for (int j = 0; j <= n; j++)
 			std::cout << storage[i][j] << '\t';
 		std::cout << '\n';
 	}
 
 	// Footer
 	std::cout << " \t";
-	for (int i = 0; i < n + 1; i++)
+	for (int i = 0; i <= n; i++)
 		std::cout << '-' << '\t';
 	std::cout << '\n';
 
 	std::cout << " \t";
-	for (int i = 0; i < n + 1; i++)
+	for (int i = 0; i <= n; i++)
 		std::cout << i << '\t';
 	std::cout << '\n';
 }
@@ -97,7 +97,7 @@ int main() {
 		return 1;
 	}
 
-	if (n != w.size()) {
+	if (n != (int) w.size()) {
 		std::cerr << "Error: benefits and weights vectors must be of the same size\n";
 		return 1;
 	}

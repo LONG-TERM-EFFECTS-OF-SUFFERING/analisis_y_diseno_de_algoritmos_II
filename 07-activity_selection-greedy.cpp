@@ -1,8 +1,13 @@
 #include <iostream>
+#include <vector>
 #include <string>
 
+int n;
+std::vector <int> s, f;
+std::vector <int> solution;
 
-std::string activity_selector(int* solution, int n, int s[], int f[], int k) {
+
+std::string activity_selector(std::vector <int> s, std::vector <int> f, int k) {
 	int m = k + 1;
 
 	while (m < n && s[m] < f[k])
@@ -10,49 +15,33 @@ std::string activity_selector(int* solution, int n, int s[], int f[], int k) {
 
 	if (m < n) {
 		solution[m] = 1;
-		return "(" + std::to_string(s[m]) + "," + std::to_string(f[m]) + ") " + activity_selector(solution, n, s, f, m);
+		return "(" + std::to_string(s[m]) + "," + std::to_string(f[m]) + ") " + activity_selector(s, f, m);
 	} else // m >= n
 		return "";
 }
 
+std::string activity_selector_helper() {
+	std::vector <int> new_s = s, new_f = f;
+	new_s.insert(new_s.begin(), INT_MIN);
+	new_f.insert(new_f.begin(), INT_MIN);
+
+	return activity_selector(new_s, new_f, 0);
+}
+
 
 int main() {
-	int s[] = {
-		3, // Dummy s_1
-		1,
-		2,
-		6,
-		8,
-		5
-	};
+	s = { 1, 2, 6, 8, 5 };
+	f = { 3, 5, 8, 9, 10 };
 
-	int f[] = {
-		3, // Dummy f_1
-		3,
-		5,
-		8,
-		9,
-		10
-	};
-
-	int n = sizeof(s) / sizeof(int);
-	int* solution = new int[n];
+	n = s.size();
+	solution = std::vector <int>(n);
 
 	std::cout << "Activities: ";
 	for (int i = 0; i < n; i++)
 		std::cout << '(' << s[i] << ','
 			<< f[i] << ") ";
 	std::cout << '\n';
-	std::cout << "Selected activities: " + activity_selector(solution, n, s, f, 0);
-	// for (int i = 0; i < n; i++)
-	// 	if (solution[i] == 1) {
-	// 		std::cout << '(' << s[i] << ','
-	// 			<< f[i] << ") ";
-	// 	}
-
-	std::cout << std::endl;
-
-	delete[] solution;
+	std::cout << "Selected activities: " + activity_selector_helper();
 
 	return 0;
 }

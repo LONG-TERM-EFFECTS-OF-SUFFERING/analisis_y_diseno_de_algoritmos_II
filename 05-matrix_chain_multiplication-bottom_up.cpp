@@ -1,24 +1,21 @@
 #include <algorithm>
 #include <iostream>
 #include <limits.h>
+#include <vector>
 
 #define UNKNOWN -1 // Contents denote an empty cell
+
 int n;
-int** multiplications_matrix;
-int** k_matrix;
+std::vector <int> matrices;
+std::vector <std::vector <int>> multiplications_matrix, k_matrix;
 
 
-int MCM(int matrices[], int i_, int j_) {
+int MCM(int i_, int j_) {
+	// First diagonal
 	for (int i = 0; i < n; i++) {
 		multiplications_matrix[i][i] = 0;
 		k_matrix[i][i] = 0;
 	}
-
-	for (int i = 0; i < n; i++)
-		for (int j = i + 1; j < n; j++) {
-			multiplications_matrix[i][j] = UNKNOWN;
-			k_matrix[i][j] = UNKNOWN;
-		}
 
 	// Travel along the diagonals
 	for (int l = 2; l <= n; l++) // Subchain length
@@ -54,7 +51,7 @@ std::string get_solution(int i, int j) {
 	}
 }
 
-void print_storage(int** matrix, int n) {
+void print_storage(std::vector <std::vector <int>> matrix) {
 	// Header
 	std::cout << " \t";
 	for (int i = 0; i < n; i++)
@@ -81,34 +78,17 @@ void print_storage(int** matrix, int n) {
 
 
 int main() {
-	int matrices[] = { 30, 35, 15, 5, 10, 20, 25 };
-	int array_n = sizeof(matrices) / sizeof(int);
+	matrices = { 30, 35, 15, 5, 10, 20, 25 };
+	n = matrices.size() == 2 ? 1 : matrices.size() - 1;
 
-	if (array_n == 2)
-		n = 1;
-	else
-		n = array_n - 1;
+	multiplications_matrix = std::vector <std::vector <int>>(n, std::vector <int>(n));
+	k_matrix = std::vector <std::vector <int>>(n, std::vector <int>(n));
 
-	multiplications_matrix = new int*[n];
-	k_matrix = new int*[n];
-
-	for (int i = 0; i < n; i++) {
-		multiplications_matrix[i] = new int[n];
-		k_matrix[i] = new int[n];
-	}
-
-	MCM(matrices, 1, n);
-	print_storage(multiplications_matrix, n);
+	MCM(1, n);
+	// print_storage(multiplications_matrix);
 	std::cout << '\n';
-	print_storage(k_matrix, n);
+	// print_storage(k_matrix);
 	std::cout << "\nOptimal parenthesization: " << get_solution(1, n) << std::endl;
-
-	for (int i = 0; i < n; i++) {
-		delete[] multiplications_matrix[i];
-		delete[] k_matrix[i];
-	}
-	delete[] multiplications_matrix;
-	delete[] k_matrix;
 
 	return 0;
 }

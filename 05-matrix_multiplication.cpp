@@ -1,13 +1,14 @@
 #include <iostream>
+#include <vector>
 #include <cstdlib>
 #include <ctime>
 
+int p, q, r;
+std::vector <std::vector <int>> A, B;
 
-int** multiply_matrices(int** A, int** B, int p, int q, int r) {
-	int** C = new int*[p];
 
-	for (int i = 0; i < p; i++)
-		C[i] = new int[r];
+std::vector <std::vector <int>> multiply_matrices() {
+	std::vector <std::vector <int>> C = std::vector <std::vector <int>>(p, std::vector<int>(r));
 
 	for (int i = 0; i < p; i++)
 		for (int j = 0; j < r; j++) {
@@ -19,18 +20,12 @@ int** multiply_matrices(int** A, int** B, int p, int q, int r) {
 	return C;
 }
 
+
 int main() {
-	int p = 4, q = 5, r = 6;
+	p = 4, q = 5, r = 6;
 
-	int** A = new int*[p]; // p x q
-
-	for (int i = 0; i < p; i++)
-		A[i] = new int[q];
-
-	int** B = new int*[q]; // q x r
-
-	for (int i = 0; i < q; i++)
-		B[i] = new int[r];
+	A = std::vector <std::vector <int>>(p, std::vector<int>(q)); // p x q
+	B = std::vector <std::vector <int>>(q, std::vector<int>(r)); // q x r
 
 	std::srand(std::time(0));
 
@@ -42,24 +37,13 @@ int main() {
 		for (int j = 0; j < r; j++)
 			B[i][j] = std::rand() % 10;
 
-	int** C = multiply_matrices(A, B, p, q, r); // p x r
+	std::vector <std::vector <int>> C = multiply_matrices(); // p x r
 
 	for (int i = 0; i < p; i++) {
 		for (int j = 0; j < r; j++)
 			std::cout << C[i][j] << " ";
 		std::cout << std::endl;
 	}
-
-	for (int i = 0; i < p; i++) {
-		delete[] A[i];
-		delete[] C[i];
-	}
-	delete[] A;
-	delete[] C;
-
-	for (int i = 0; i < q; i++)
-		delete[] B[i];
-	delete[] B;
 
 	return 0;
 }

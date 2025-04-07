@@ -1,12 +1,14 @@
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 int n, m;
-int** storage;
-char** B;
+std::string x, y;
+std::vector <std::vector <int>> storage;
+std::vector <std::vector <char>> B;
 
 
-int LCS(std::string x, std::string y, int i, int j) {
+int LCS(int i, int j) {
 	// Initialize the first row and column
 	for (int i = 0; i < m + 1; i++) {
 		storage[0][i] = 0;
@@ -39,18 +41,18 @@ int LCS(std::string x, std::string y, int i, int j) {
 	return storage[i][j];
 }
 
-std::string get_solution(std::string x, int i, int j) {
+std::string get_solution(int i, int j) {
 	if (i == 0 || j == 0)
 		return "";
 	else if (B[i][j] == '\\')
-		return get_solution(x, i - 1, j - 1) + x[i - 1];
+		return get_solution(i - 1, j - 1) + x[i - 1];
 	else if (B[i][j] == '|')
-		return get_solution(x, i - 1, j);
+		return get_solution(i - 1, j);
 	else // B[i][j] == '-'
-		return get_solution(x, i, j - 1);
+		return get_solution(i, j - 1);
 }
 
-void print_storage(std::string x, std::string y) {
+void print_storage() {
 	// Header
 	std::cout << " \t\t";
 	for (int i = 0; i < m; i++)
@@ -63,9 +65,9 @@ void print_storage(std::string x, std::string y) {
 	std::cout << '\n';
 
 	// Print storage matrix
-	for (int i = 0; i < n + 1; i++) {
+	for (int i = 0; i <= n; i++) {
 		std::cout << (i == 0 ? ' ': x[i - 1]) << '\t';
-		for (int j = 0; j < m + 1; j++)
+		for (int j = 0; j <= m; j++)
 			std::cout << storage[i][j] << B[i][j] << '\t';
 		std::cout << '\n';
 	}
@@ -73,31 +75,19 @@ void print_storage(std::string x, std::string y) {
 
 
 int main() {
-	std::string x = "ABCBDAB";
-	std::string y = "BDCABA";
+	x = "ABCBDAB";
+	y = "BDCABA";
 
 	n = x.length();
 	m = y.length();
 
-	storage = new int*[n + 1];
-	B = new char*[n + 1];
+	storage = std::vector <std::vector <int>>(n + 1, std::vector <int>(m + 1));
+	B = std::vector <std::vector <char>>(n + 1, std::vector <char>(m + 1));
 
-	for (int i = 0; i < n + 1; i++) {
-		storage[i] = new int[m + 1];
-		B[i] = new char[m + 1];
-	}
-
-	int solution_length = LCS(x, y, n, m);
-	print_storage(x, y);
-	std::string solution = get_solution(x, n, m);
-	std::cout << "LCS(" << x << ',' << y << "): " << solution << '\n';
-
-	for (int i = 0; i < n + 1; i++) {
-		delete[] storage[i];
-		delete[] B[i];
-	}
-	delete[] storage;
-	delete[] B;
+	int solution_length = LCS(n, m);
+	print_storage();
+	std::string solution = get_solution(n, m);
+	std::cout << "LCS(" << x << ',' << y << "): " << solution << " with length " << solution_length << '\n';
 
 	return 0;
 }

@@ -3,8 +3,8 @@
 #define MAX 92 // Largest n for which F(n) fits in a long
 
 
-int Fibonacci(int position) {
-	int a = 0, b = 1;
+long Fibonacci(int position) {
+	long a = 0, b = 1;
 
 	if (position == 0)
 		return 0; // a
@@ -23,7 +23,7 @@ int Fibonacci(int position) {
 
 
 int main() {
-	int position = 10;
+	int position = 39;
 
 	if (position < 0 || position > MAX) {
 		std::cerr << "Error: position must be between 0 and " << MAX << '\n';
